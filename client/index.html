@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конвертер - spesi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: sans-serif;
+            margin: 50px auto;
+            width: fit-content;
+            font-size: 24px;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        h3 {
+            margin-bottom: 25px;
+        }
+
+        form {
+            margin: 0 auto;
+            width: fit-content;
+        }
+
+        input,
+        label {
+            margin-bottom: 10px;
+        }
+
+        #from {
+            margin-right: 20px;
+        }
+
+        option,
+        input,
+        button,
+        select {
+            font-size: 18px;
+        }
+
+        button {
+            margin-top: 30px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        #result {
+            margin-top: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Конвертер валют</h1>
+    <h3 id="current-date">Сегодняшняя дата: </h3>
+
+    <form id="converter-form">
+        <label for="amount">Сумма:</label>
+        <input type="number" id="amount" name="amount" required>
+        <br>
+        <label for="from">из:</label>
+        <select id="from" name="from">
+            <option value="RUB" selected>RUB</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+        </select>
+        <label for="to">в:</label>
+        <select id="to" name="to">
+            <option value="RUB">RUB</option>
+            <option value="USD" selected>USD</option>
+            <option value="EUR">EUR</option>
+        </select>
+        <br>
+        <button type="submit">Рассчитать</button>
+    </form>
+    <h2 id="result"></h2>
+
+    <script>
+        async function fetchDate() {
+            const response = await fetch('/api/date');
+            const data = await response.json();
+            document.getElementById('current-date').innerText = `Сегодняшняя дата: ${data.date}`;
+        }
+        fetchDate();
+
+        const form = document.getElementById('converter-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const amount = document.getElementById('amount').value;
+            const from = document.getElementById('from').value;
+            const to = document.getElementById('to').value;
+
+            const response = await fetch('/api/convert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: parseFloat(amount), from, to })
+            });
+
+            const data = await response.json();
+            document.getElementById('result').innerText = `Итог: ${data.result} ${to}`;
+        });
+    </script>
+</body>
+
+</html>
