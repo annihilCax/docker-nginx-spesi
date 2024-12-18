@@ -11,11 +11,14 @@ COPY ./server /app
 FROM python:3.9-alpine
 WORKDIR /app
 
+# Установка зависимостей для сервера
 RUN apk add --no-cache nginx
-
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=client /usr/share/nginx/html /usr/share/nginx/html
 COPY --from=server /app /app
+COPY --from=client /usr/share/nginx/html /usr/share/nginx/html
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Установка зависимостей сервера
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 EXPOSE 80
 
