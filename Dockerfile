@@ -1,13 +1,16 @@
+# Строим образ для клиента (nginx)
 FROM nginx:alpine AS client
 WORKDIR /usr/share/nginx/html
 COPY ./client/index.html ./
 
+# Строим образ для сервера (Python)
 FROM python:3.9-slim AS server
 WORKDIR /app
 COPY ./server/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./server /app
 
+# Основной контейнер
 FROM python:3.9-alpine
 WORKDIR /app
 
