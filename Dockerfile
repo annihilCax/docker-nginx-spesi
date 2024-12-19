@@ -16,7 +16,7 @@ WORKDIR /app
 
 # Установка зависимостей для сервера
 RUN apk add --no-cache nginx
-COPY --from=server /app /app
+COPY --from=server /app /app 
 COPY --from=client /usr/share/nginx/html /usr/share/nginx/html
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
